@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<form method="post" action="/user_create/">
+    {% csrf_token %}
+    <label for="username">Имя пользователя:</label>
+    <input type="text" name="username" id="username" required>
+    <!-- С required не дает нажать Submit - пишет, что пропустили обязательное поле -->
+    <label for="email">Email:</label>
+    <input type="email" name="email" id="email" required>
+    <button type="submit">Отправить</button>
+</form>
+
+
+{% endblock %}
