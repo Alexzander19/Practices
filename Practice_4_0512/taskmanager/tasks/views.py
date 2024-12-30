@@ -1,8 +1,9 @@
 import re
 from django.http import HttpResponse
-from django.shortcuts import render
+from django.shortcuts import redirect, render
 
 from .models import Project, Task, User
+from .forms import ProjectAddForm
 
 # Create your views here.
 
@@ -58,3 +59,16 @@ def user_create(request):
     return HttpResponse(f"Данные получены И ЗАПИСАНЫ {username}, {email}")
     
   return render(request, "tasks/user_create.html")
+
+
+
+def project_create_form(request):
+  if request.method == "POST":
+    form = ProjectAddForm(data=request.POST)
+    if form.is_valid():
+      form.save()
+      return redirect('index')
+  else:
+      form = ProjectAddForm()
+
+  return render(request, "tasks/project_create.html", {"form": form})
