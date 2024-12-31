@@ -2,8 +2,10 @@ import re
 from django.http import HttpResponse
 from django.shortcuts import redirect, render
 
-from .models import Project, Task, User
-from .forms import ProjectAddForm
+from .forms import TaskCreateForm, TaskForm
+
+from .models import Project, Task, TaskStatus, User
+
 
 # Create your views here.
 
@@ -12,7 +14,7 @@ def index(request):
 
 def projects(request):
   projects_list = Project.objects.all()
-  return render(request, 'tasks/projects.html', context={'projects': projects_list})
+  return render(request, 'tasks/project/projects.html', context={'projects': projects_list})
 
 def performers(request):
   performers_list = User.objects.all()
@@ -20,12 +22,12 @@ def performers(request):
 
 def tasks(request):
   tasks_list = Task.objects.all()
-  return render(request, 'tasks/tasks.html', context={'tasks': tasks_list})
+  return render(request, 'tasks/task/tasks.html', context={'tasks': tasks_list})
 
 def project(request, project_id):
   project_view = Project.objects.get(pk=project_id)
   tasks_list = Task.objects.filter(project_id=project_id)
-  return render(request, 'tasks/project.html', context={'project': project_view, 'tasks': tasks_list})
+  return render(request, 'tasks/project/project.html', context={'project': project_view, 'tasks': tasks_list})
 
 def user_create(request):
   if request.method == "POST":
@@ -62,13 +64,40 @@ def user_create(request):
 
 
 
-def project_create_form(request):
+def project_create(request):
+  
+  if request.method == 'POST':
+      name = request.POST['name']
+      description = request.POST['description']
+      project_view = Project.objects.create(name=name, description=description)
+      return redirect('project', project_view.id)
+  
+  return render(request, 'tasks/project/create.html')
+
+
+def task_create(request):
   if request.method == "POST":
-    form = ProjectAddForm(data=request.POST)
+    form = TaskCreateForm(request.POST)
+    if form.is_valid():
+      # form.save()  # В случае если не нужно изменять сущность задачи
+      task = form.save(commit=False)
+      task.status = TaskStatus.objects.get(id=1)
+      task.save()
+      return redirect('tasks')
+  else:
+    form = TaskCreateForm()
+  
+  projects_list = Project.objects.all()
+  return render(request, 'tasks/task/create.html', context={'form': form, 'projects': projects_list})
+
+
+def task(request, task_id):
+  task_view = Task.objects.get(pk=task_id)  # Получаем объект Task по первичному ключу
+  if request.method == "POST":
+    form = TaskForm(request.POST, instance=task_view)  # Передаём существующий объект в форму
     if form.is_valid():
       form.save()
-      return redirect('index')
+      return redirect('tasks')
   else:
-      form = ProjectAddForm()
-
-  return render(request, "tasks/project_create.html", {"form": form})
+    form = TaskForm(instance=task_view)  # Предзаполняем форму текущими данными
+  return render(request, 'tasks/task/details.html', {'form': form, 'task': task})
