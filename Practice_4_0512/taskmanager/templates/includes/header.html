@@ -19,14 +19,23 @@
             
 
             <li class="nav-item">
-              <a class="nav-link" href="{% url 'login' %}">Войти</a>
+              <a class="nav-link" href="{% url 'signin' %}">Войти</a>
             </li>
 
             <li class="nav-item">
-              <a class="nav-link" href="{% url 'logout' %}">Выйти</a>
+              <a class="nav-link" href="{% url 'signout' %}">Выйти</a>
             </li>
 
           </ul>
+
+          <div class="ms-auto">
+            {% if user.is_authenticated %}
+                <span class="me-3"> {{ user.lastname }} {{ user.firstname }}</span>
+                <a href="{% url 'signout' %}" class="btn btn-dark">Выйти</a>
+            {% else %}
+                <a href="{% url 'signin' %}" class="btn btn-dark">Войти</a>
+            {% endif %}
+        </div>
         </div>
       </div>
     </nav>

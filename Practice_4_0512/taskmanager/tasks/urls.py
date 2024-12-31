@@ -11,7 +11,12 @@ urlpatterns = [
   path('project/<int:project_id>', views.project, name='project'),
  
   path('performers/', views.performers, name='performers'),
-  path('user_create/',views.user_create,name='user_create'),
+
+
+
+  path('signup/', views.signup, name='signup'),
+  path('signin/', views.signin, name='signin'),
+  path('signout/', views.signout, name='signout'),
 
   path('tasks/', views.tasks, name='tasks'), 
   path('tasks/create/', views.task_create, name='task_create'),

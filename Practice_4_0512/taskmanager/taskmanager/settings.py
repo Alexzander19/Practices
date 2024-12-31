@@ -101,6 +101,8 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+AUTH_USER_MODEL = 'tasks.User'  # Изменяем базовую модель на нашу
+
 
 # Internationalization
 # https://docs.djangoproject.com/en/5.1/topics/i18n/
@@ -123,3 +125,9 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+AUTH_USER_MODEL = 'tasks.User'
+
+LOGIN_URL = '/signin/'  #  Автоматический редирект на эту страницу, если для отображения страницы нужна авторизация
+LOGIN_REDIRECT_URL = '/index/'  #  Автоматический редирект, когда пользователь произвел аутентификацию
+LOGOUT_REDIRECT_URL = '/index/'  #  Автоматический редирект, если пользователь произвел выход из системы
